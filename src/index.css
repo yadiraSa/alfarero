@@ -1,0 +1,43 @@
+@import '~antd/dist/antd.css';
+
+#components-layout-demo-custom-trigger .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  #components-layout-demo-custom-trigger .trigger:hover {
+    color: #1890ff;
+  }
+  
+  #components-layout-demo-custom-trigger {
+    height: 32px;
+    background: #ffffff33;
+    margin: 16px;
+  }
+  
+  .demo-logo {
+    background: rgba(19, 3, 160, 0.89);
+  }
+  .site-layout .site-layout-background {
+    background: #fff;
+  }
+
+  .header {
+    background-color: #fff;
+    background-image: url('./img/full_logo.png');
+    background-repeat: no-repeat;
+  }
+
+  .header-title {
+    position: fixed;
+    top: 0;
+    width: 90%;
+    text-align: end;
+  }
+
+  .titulo-registro {
+   color: rgba(28, 12, 173, 0.89);
+  }
