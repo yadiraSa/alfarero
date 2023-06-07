@@ -1,47 +1,72 @@
 import React, { useState } from 'react';
-
-import { Form, Input, Button, InputNumber, Typography, Divider } from 'antd';
+import { Form, Input, Button, Typography, Divider, InputNumber } from 'antd';
 import { SaveFilled } from '@ant-design/icons';
 import { Redirect, useHistory } from 'react-router-dom';
-
 import { useHideMenu } from '../hooks/useHideMenu';
 import { getUsuarioStorage } from '../helpers/getUsuarioStorage';
+import firebase from 'firebase/compat/app';
+import { initializeApp } from "firebase/app";
+import moment from 'moment';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 const { Title, Text } = Typography;
+export const firebaseConfig = {
+    apiKey: "AIzaSyDXCY9JGX_CFH8odtzH3C1trr9J0kVEugQ",
+    authDomain: "ticket-back-nest.firebaseapp.com",
+    projectId: "ticket-back-nest",
+    storageBucket: "ticket-back-nest.appspot.com",
+    messagingSenderId: "32548875194",
+    appId: "1:32548875194:web:1d23a60c0335e33b7d0b83"
+  };
+
+firebase.initializeApp(firebaseConfig);
 
 const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 14 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14 },
 };
 
 const tailLayout = {
-    wrapperCol: { offset: 8, span: 14 },
+  wrapperCol: { offset: 8, span: 14 },
 };
 
-
 export const Registro = () => {
+  const history = useHistory();
+  const [usuario] = useState(getUsuarioStorage());
 
-    const history = useHistory();
-    const [ usuario ] = useState( getUsuarioStorage() );
+  useHideMenu(false);
 
-    useHideMenu(false);
-
-    const onFinish = ({ agente, escritorio }) => {
-
-        localStorage.setItem('agente', agente );
-        localStorage.setItem('escritorio', escritorio );
-
+  const onFinish = ({ paciente, edad, tel, sintomas }) => {
+    const tiempo = moment().format("D [de] MMMM [de] YYYY, HH:mm:ss [UTC]Z");  
+    const db = firebase.firestore();
+    db.collection('patients')
+      .add({
+        paciente,
+        edad,
+        tel,
+        sintomas,
+        tiempo,
+      })
+      .then(() => {
+        localStorage.setItem('paciente', paciente);
+        localStorage.setItem('edad', edad);
+        localStorage.setItem('tel', tel);
+        localStorage.setItem('sintomas', sintomas);
         history.push('/escritorio');
-    };
-    
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-    if ( usuario.agente && usuario.escritorio ) {
-        return <Redirect to="/escritorio" />
-    }
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
+  if (usuario.agente && usuario.escritorio) {
+    return <Redirect to="/escritorio" />;
+  }
 
     return (
         <>
