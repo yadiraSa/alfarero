@@ -23,8 +23,8 @@ export const Registro = () => {
 
   const onFinish = ({ paciente, edad, tel, sintomas }) => {
     const tiempo = moment().format("D [de] MMMM [de] YYYY, HH:mm:ss [UTC]Z");
-    const db = firestore.firestore();
-    db.collection("patients")
+    firestore
+      .collection("patients")
       .add({
         paciente,
         edad,
