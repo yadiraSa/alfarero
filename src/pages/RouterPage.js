@@ -1,85 +1,109 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
 
-import { Layout, Menu } from 'antd';
+import { Layout, Menu } from "antd";
 import {
   UserOutlined,
   FileTextFilled,
   UploadOutlined,
-} from '@ant-design/icons';
+  LoginOutlined,
+  IdcardOutlined,
+} from "@ant-design/icons";
 
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
-  Redirect
-} from 'react-router-dom';
+  Redirect,
+} from "react-router-dom";
 
-import { Registro } from './Registro';
-import { Turno } from './Turno';
-import { CrearTurno } from './CrearTurno';
-import { Escritorio } from './Escritorio';
-import { UiContext } from '../context/UiContext';
+import { Registro } from "./Registro";
+import { Turno } from "./Turno";
+import { CrearTurno } from "./CrearTurno";
+import { Escritorio } from "./Escritorio";
+import { UiContext } from "../context/UiContext";
+import { IngresarHost } from "./IngresarHost";
 
-
-const { Header, Content } = Layout;
-
+const { Sider, Content, Header } = Layout;
 
 export const RouterPage = () => {
+  const { ocultarMenu } = useContext(UiContext);
+  const menuItems = [
+    {
+      key: "1",
+      icon: <LoginOutlined />,
+      label: <Link to="/ingresar-host">Ingresar Huésped</Link>,
+    },
+    {
+      key: "2",
+      icon: <UserOutlined />,
+      label: <Link to="/registro">Registro</Link>,
+    },
+    {
+      key: "3",
+      icon: <UploadOutlined />,
+      label: <Link to="/crear">Crear</Link>,
+    },
+    {
+      key: "4",
+      icon: <FileTextFilled />,
+      label: <Link to="/turnos">Turnos</Link>,
+    },
+    {
+      key: "5",
+      icon: <IdcardOutlined />,
+      label: <Link to="/escritorio">Escritorio</Link>,
+    },
+  ];
 
-    const { ocultarMenu } = useContext( UiContext )
-    
-
-    return (
-      <Router>
-        <Layout>
+  return (
+    <Router>
+      <Layout style={{ height: "100vh" }}>
+        <Sider collapsedWidth="0" breakpoint="md" hidden={ocultarMenu}>
+          <div className="logo" />
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            items={menuItems}
+          />
+        </Sider>
+        <Layout className="site-layout">
           <Header
-            className="header"
             style={{
               position: "sticky",
+              zIndex: 100,
               top: 0,
-              zIndex: 1,
-              width: "100%",
               display: "flex",
-              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              backgroundColor: "#fff",
             }}
           >
-            <h1 className="header-title">Plan de Cuidado de Pacientes</h1>
-            <div className="demo-logo" />
+            <div className="header"></div>
+            <div>Plan de Cuidado de Pacientes</div>
           </Header>
-          <Layout className="site-layout">
-          <Menu theme="ligth" mode="vertical-right" defaultSelectedKeys={["1"]}>
-              <Menu.Item key="1" icon={<UserOutlined />}>
-                <Link to="/registro">Registro</Link>
-              </Menu.Item>
-              <Menu.Item key="2" icon={<FileTextFilled />}>
-                <Link to="/turno">Turno del paciente</Link>
-              </Menu.Item>
-              <Menu.Item key="3" icon={<UploadOutlined />}>
-                <Link to="/crear">Crear turno</Link>
-              </Menu.Item>
-            </Menu>
-            <Content
-              className="site-layout-background"
-              style={{
-                height: "100vh",
-                margin: "24px 16px",
-                padding: 24,
-                minHeight: 280,
-              }}
-            >
-              <Switch>
-                <Route path="/registro" component={Registro} />
-                <Route path="/turno" component={Turno} />
-                <Route path="/crear" component={CrearTurno} />
+          <Content
+            className="site-layout-background"
+            style={{
+              margin: "24px 16px",
+              padding: 24,
+              minHeight: 280,
+            }}
+          >
+            <Switch>
+              <Route path="/ingresar-host" component={IngresarHost} />
+              <Route path="/registro" component={Registro} />
+              <Route path="/turnos" component={Turno} />
+              <Route path="/crear" component={CrearTurno} />
 
-                <Route path="/escritorio" component={Escritorio} />
+              <Route path="/escritorio" component={Escritorio} />
 
-                <Redirect to="/ingresar" />
-              </Switch>
-            </Content>
-          </Layout>
+              <Redirect to="/ingresar-host" />
+            </Switch>
+          </Content>
         </Layout>
-      </Router>
-    );
-}
+      </Layout>
+    </Router>
+  );
+};
