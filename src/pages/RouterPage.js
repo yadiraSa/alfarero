@@ -5,6 +5,7 @@ import {
   FileTextFilled,
   LoginOutlined,
   IdcardOutlined,
+  BarChartOutlined
 } from "@ant-design/icons";
 import {
   BrowserRouter as Router,
@@ -20,6 +21,7 @@ import { CrearTurno } from "./CrearTurno";
 import { Escritorio } from "./Escritorio";
 import { UiContext } from "../context/UiContext";
 import { IngresarHost } from "./IngresarHost";
+import Stats from "./Stats";
 
 const { Sider, Content, Header } = Layout;
 const { Title } = Typography;
@@ -46,6 +48,11 @@ export const RouterPage = () => {
       key: "4",
       icon: <IdcardOutlined />,
       label: <Link to="/escritorio">Escritorio</Link>,
+    },
+    {
+      key: "5",
+      icon: <BarChartOutlined />,
+      label: <Link to="/estadisticas">Estadisticas de hoy</Link>,
     },
   ];
 
@@ -92,6 +99,7 @@ export const RouterPage = () => {
                 <Route path="/turnos" component={Turno} />
                 <Route path="/crear" component={CrearTurno} />
                 <Route path="/escritorio" component={Escritorio} />
+                <Route path="/estadisticas" component={Stats} />
                 <Redirect to="/ingresar-host" />
               </Switch>
             </AlertProvider>
