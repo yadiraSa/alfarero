@@ -52,10 +52,9 @@ export const RouterPage = () => {
   ];
 
   return (
-    <Router>
-      <Layout style={{ height: "100vh" }}>
-        <Sider collapsedWidth="0" breakpoint="md" hidden={ocultarMenu}>
-          <div className="logo" />
+    <Layout style={{ minHeight: "100vh", minWidth: "100%" }}>
+      <Router>
+        <Sider collapsedWidth="0" breakpoint="lg" hidden={ocultarMenu}>
           <Menu
             theme="dark"
             mode="inline"
@@ -70,7 +69,7 @@ export const RouterPage = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#fff",
-              alignItems: 'center',
+              alignItems: "center",
             }}
           >
             <div className="header"></div>
@@ -99,7 +98,7 @@ export const RouterPage = () => {
             </AlertProvider>
           </Content>
         </Layout>
-      </Layout>
-    </Router>
+      </Router>
+    </Layout>
   );
 };
