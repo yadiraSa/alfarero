@@ -1,17 +1,38 @@
 import React, { useState } from "react";
-
-import { Form, Input, Button, InputNumber, Typography, Divider } from "antd";
+import { Form, Input, Button, Typography, Divider, Select } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import { useHistory, Redirect } from "react-router-dom";
-
 import { useHideMenu } from "../hooks/useHideMenu";
 import { getUsuarioStorage } from "../helpers/getUsuarioStorage";
+import { useAlert } from "../hooks/alert";
+import { firestore } from "./../helpers/firebaseConfig";
 
 const { Title, Text } = Typography;
+const { Option } = Select;
+
+const stations = [
+  { value: "reg", label: "Registro" },
+  { value: "nur", label: "Enfermera" },
+  { value: "doc", label: "Doctor" },
+  { value: "pt", label: "Terapia Fisica" },
+  { value: "ped", label: "Pediatria" },
+  { value: "nut", label: "Nutricion" },
+  { value: "obs", label: "Obstetricia" },
+  { value: "pha", label: "Farmacia" },
+  { value: "lab", label: "Laboratorio" },
+  { value: "pra", label: "Práctica" },
+  { value: "pay", label: "Pago" },
+  { value: "fin", label: "Finalizar" },
+];
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
+};
+
+const halfLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 12 },
 };
 
 const tailLayout = {
@@ -20,40 +41,66 @@ const tailLayout = {
 
 export const IngresarHost = () => {
   const history = useHistory();
+  const { showAlert } = useAlert();
+  const [form] = Form.useForm();
   const [usuario] = useState(getUsuarioStorage());
 
   useHideMenu(false);
 
-  const onFinish = ({ host, servicio }) => {
-    localStorage.setItem("host", host);
-    localStorage.setItem("servicio", servicio);
+  const onFinish = async ({ host, servicio }) => {
+    if (host.trim() === "" || !servicio) {
+      showAlert("error", "Por favor ingrese todos los campos");
+      return;
+    }
 
-    history.push("/escritorio");
+    try {
+      const hostRef = firestore.collection("hosts").where("host", "==", host);
+      const hostSnapshot = await hostRef.get();
+
+      if (hostSnapshot.empty) {
+        // si el nombre no existe, se inserta un nuevo registro
+        const hostData = { host, servicio };
+        await firestore.collection("hosts").add(hostData);
+        showAlert("success", "Datos guardados correctamente");
+      } else {
+        // si el nombre existe, se actualiza el servicio
+        const docRef = hostSnapshot.docs[0].ref;
+        await docRef.update({ servicio });
+        showAlert("success", "Servicio actualizado correctamente");
+      }
+
+      localStorage.setItem("host", host);
+      localStorage.setItem("servicio", servicio);
+      history.push("/escritorio");
+    } catch (error) {
+      showAlert("error", "Error al guardar los datos en Firebase");
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
+  
   if (usuario.host && usuario.servicio) {
     return <Redirect to="/escritorio" />;
   }
-
+  
   return (
     <>
-      <Title level={1} style={{ color: " rgba(28, 12, 173, 0.89)" }}>
+      <Title level={1} style={{ color: "rgba(28, 12, 173, 0.89)" }}>
         ¡Bienvenido!
       </Title>
       <Title level={2}>Ingresar</Title>
       <Text>Ingrese su nombre y número de escritorio</Text>
       <Divider />
-
+  
       <Form
         {...layout}
         name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
+        form={form}
       >
         <Form.Item
           label="Nombre del huésped"
@@ -61,10 +108,11 @@ export const IngresarHost = () => {
           rules={[
             { required: true, message: "Por favor ingrese nombre del huésped" },
           ]}
+          {...halfLayout}
         >
           <Input />
         </Form.Item>
-
+  
         <Form.Item
           label="Servicio"
           name="servicio"
@@ -74,10 +122,17 @@ export const IngresarHost = () => {
               message: "Por favor ingrese el número de servicio asignado",
             },
           ]}
+          {...halfLayout}
         >
-          <InputNumber min={1} max={99} />
+          <Select>
+            {stations.map((station) => (
+              <Option key={station.value} value={station.value}>
+                {station.label}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
-
+  
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit" shape="round">
             <SaveOutlined />

@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-
 import { Layout, Menu, Typography } from "antd";
 import {
   UserOutlined,
@@ -7,7 +6,6 @@ import {
   LoginOutlined,
   IdcardOutlined,
 } from "@ant-design/icons";
-
 import {
   BrowserRouter as Router,
   Switch,
@@ -53,15 +51,15 @@ export const RouterPage = () => {
 
   return (
     <Router>
-      <Layout style={{ height: "100vh" }}>
-        <Sider collapsedWidth="0" breakpoint="md" hidden={ocultarMenu}>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          collapsedWidth={0}
+          breakpoint="md"
+          hidden={ocultarMenu}
+        >
           <div className="logo" />
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            items={menuItems}
-          />
+          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]} items={menuItems} />
         </Sider>
         <Layout className="site-layout">
           <Header
@@ -70,12 +68,14 @@ export const RouterPage = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               backgroundColor: "#fff",
-              alignItems: 'center',
+              alignItems: "center",
+              padding: "0 16px",
             }}
           >
-            <div className="header"></div>
-
-            <Title level={5}>Plan de Cuidado de Pacientes</Title>
+            <div className="header" />
+            <Title level={5} style={{ margin: 0, flex: 1, textAlign: "center" }}>
+              Plan de Cuidado de Pacientes
+            </Title>
           </Header>
           <Content
             className="site-layout-background"
@@ -91,9 +91,7 @@ export const RouterPage = () => {
                 <Route path="/registro" component={Registro} />
                 <Route path="/turnos" component={Turno} />
                 <Route path="/crear" component={CrearTurno} />
-
                 <Route path="/escritorio" component={Escritorio} />
-
                 <Redirect to="/ingresar-host" />
               </Switch>
             </AlertProvider>
