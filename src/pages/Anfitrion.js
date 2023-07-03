@@ -7,8 +7,13 @@ import {
   Divider,
   Button,
   Popconfirm,
+  Select,
+  Form,
+  Row,
+  Col,
+  Dropdown
 } from "antd";
-import { CloseCircleOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, SaveFilled } from "@ant-design/icons";
 import { firestore } from "./../helpers/firebaseConfig";
 import {
   handleStatusChange,
@@ -17,19 +22,21 @@ import {
 import { useHistory } from "react-router-dom";
 import { useHideMenu } from "../hooks/useHideMenu";
 import { AlertInfo } from "../components/AlertInfo";
-import { Link } from "react-router-dom";
+import { stations } from "../helpers/stations";
 import Footer from "./Footer";
 import { useTranslation } from "react-i18next";
+const { Option } = Select;
 
 export const Anfitrion = () => {
   useHideMenu(true);
   const [data, setData] = useState([]);
   const [station, setStation] = useState("");
+  
   const [hoveredRowKey, setHoveredRowKey] = useState(null);
   const [t] = useTranslation("global");
-
   const history = useHistory();
-
+  const [patientPlanOfCare, setPatientPlanOfCare] = useState([]);
+  const [count, setCount] = useState(2);
   const handleMouseEnter = (record) => {
     setHoveredRowKey(record.pt_no);
   };
@@ -37,6 +44,28 @@ export const Anfitrion = () => {
   const handleMouseLeave = () => {
     setHoveredRowKey("");
   };
+
+  const generateVisits = (visits) => {
+    const planOfCare = visits.map((visit, key) => {
+      return {
+        order: key + 1,
+        station: visit,
+        status: "pending",
+      };
+    });
+    setPatientPlanOfCare(planOfCare);
+  };
+
+
+  const stationOptions = stations.slice(0, -1).map((station) => ({
+    label: t(station.value),
+    value: station.value,
+  }));
+
+  const handleChange = (selectedOption) => {
+    generateVisits(selectedOption);
+  };
+
 
   const salir = () => {
     localStorage.clear();
@@ -437,10 +466,9 @@ export const Anfitrion = () => {
           ) : null,
       },
     ];
-
+    
     const dataSource = extractedPlanOfCare?.map((item, index) => {
       const stations = {};
-
       // eslint-disable-next-line no-unused-expressions
       item.plan_of_care?.forEach((plan) => {
         stations[plan.station] = plan.status;
@@ -452,9 +480,9 @@ export const Anfitrion = () => {
         ...stations,
       };
     });
-
     return { columns, dataSource };
   };
+  
 
   const { columns, dataSource } = generateTableData(data);
 
@@ -471,6 +499,27 @@ export const Anfitrion = () => {
       <Table
         rowKey={"pt_no"}
         columns={columns}
+        expandable={{
+          expandedRowRender: (record) => (
+            <>
+              <Select
+                mode="multiple"
+                showArrow
+                style={{
+                  width: "14%",
+                }}
+                options={stationOptions.slice(0, -1)}
+                onChange={handleChange}
+              >
+                {record.uniqueStations}
+              </Select>
+                    <Button type="danger" htmlType="submit" shape="round" style={{display: 'inline-block' }}>
+                      <SaveFilled />
+                      {t("agregar")}
+                    </Button>
+            </>
+          ),
+        }}
         dataSource={data.some((d) => d === undefined) ? [] : dataSource}
         scroll={{ x: 1500, y: 1500 }}
         sticky
