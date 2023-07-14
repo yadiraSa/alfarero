@@ -40,7 +40,7 @@ export const Registro = () => {
 
   const generateVisits = (visits) => {
     console.log("Visits", visits);
-    const planOfCare = visits.map((visit, key) => {
+    const planOfCare = stations.map((visit, key) => {
       console.log(visit);
       return {
         order: key + 1,
@@ -48,6 +48,9 @@ export const Registro = () => {
         status: "pending",
       };
     });
+    console.log(planOfCare);
+
+
     setPatientPlanOfCare(planOfCare);
   };
 

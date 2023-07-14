@@ -4,7 +4,7 @@ export const stations = [
   { value: "doc", label: "Doctor", order: 3 },
   { value: "pt", label: "Fisioterapia", order: 4 },
   { value: "ped", label: "Pediatria", order: 5 },
-  { value: "nut", label: "Nutricion", order: 6 },
+  { value: "nut", label: "Nutrición", order: 6 },
   { value: "obs", label: "Obstetricia", order: 7 },
   { value: "pha", label: "Farmacia", order: 8 },
   { value: "lab", label: "Laboratorio", order: 9 },
