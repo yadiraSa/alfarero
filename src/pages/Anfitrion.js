@@ -15,6 +15,7 @@ import {
   orderBy,
   getDocs,
   onSnapshot,
+  Timestamp,
 } from "firebase/firestore"; // Import necessary methods
 
 import { firestore } from "./../helpers/firebaseConfig";
@@ -71,10 +72,12 @@ export const Anfitrion = () => {
     // You can also perform other actions like updating state, making API calls, etc.
   };
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1); // Set time to the beginning of the next day
+  const today = Timestamp.fromDate(new Date(new Date().setHours(0, 0, 0, 0)));
+
+  // Calculate `tomorrow` as a Firestore Timestamp for the start of the next day
+  const tomorrow = Timestamp.fromDate(
+    new Date(new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000)
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -381,7 +384,9 @@ export const Anfitrion = () => {
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("pending", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("pending", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
 
         <Image
@@ -390,7 +395,12 @@ export const Anfitrion = () => {
           height={IconSizes.height * iconScale}
           preview={false}
           onClick={() =>
-            handleStatusChange("in_process", hoveredRowKey, station)
+            handleStatusChange(
+              "in_process",
+              hoveredRowKey,
+              station,
+              t("CHECKOUT")
+            )
           }
         />
 
@@ -399,7 +409,9 @@ export const Anfitrion = () => {
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("waiting", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("waiting", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
 
         <Image
@@ -407,14 +419,23 @@ export const Anfitrion = () => {
           // width={IconSizes.width}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("obs", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("obs", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
         <Image
           src={complete}
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("complete", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange(
+              "complete",
+              hoveredRowKey,
+              station,
+              t("CHECKOUT")
+            )
+          }
         />
 
         <Image
@@ -422,42 +443,54 @@ export const Anfitrion = () => {
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("2", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("2", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
         <Image
           src={three}
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("3", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("3", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
         <Image
           src={four}
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("4", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("4", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
         <Image
           src={five}
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("5", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("5", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
         <Image
           src={six}
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("6", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("6", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
         <Image
           src={seven}
           width={IconSizes.width * iconScale}
           height={IconSizes.height * iconScale}
           preview={false}
-          onClick={() => handleStatusChange("7", hoveredRowKey, station)}
+          onClick={() =>
+            handleStatusChange("7", hoveredRowKey, station, t("CHECKOUT"))
+          }
         />
       </Space>
     );
@@ -467,8 +500,16 @@ export const Anfitrion = () => {
     const uniqueStations = {};
     // eslint-disable-next-line no-unused-expressions
     extractedPlanOfCare?.sort((a, b) => {
-      const startTimeA = new Date(a?.start_time?.toMillis());
-      const startTimeB = new Date(b?.start_time?.toMillis());
+      const startTimeA =
+        a?.start_time instanceof Timestamp
+          ? a.start_time.toMillis()
+          : new Date(a?.start_time).getTime();
+
+      const startTimeB =
+        b?.start_time instanceof Timestamp
+          ? b.start_time.toMillis()
+          : new Date(b?.start_time).getTime();
+
       return startTimeA - startTimeB;
     });
 

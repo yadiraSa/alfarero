@@ -153,7 +153,7 @@ exports.updateStatusChange = functions.https.onRequest((req, res) => {
 
       // Retrieve the entry and make updates
       const currentEntry = patientData.plan_of_care[carePlanEntryIndex];
-      const now = new Date().toISOString();
+      const now = admin.firestore.Timestamp.now();
 
       // Initialize an updated entry with existing values
       const updatedEntry = {
@@ -169,10 +169,10 @@ exports.updateStatusChange = functions.https.onRequest((req, res) => {
         updatedEntry.waiting_time = null;
       } else if (currentEntry.status === "waiting" && newStatus !== "waiting") {
         updatedEntry.waiting_end = now;
-        if (updatedEntry.waiting_start) {
-          const start = new Date(updatedEntry.waiting_start).getTime();
-          const end = new Date(updatedEntry.waiting_end).getTime();
-          updatedEntry.waiting_time = (end - start) / 1000; // Time in seconds
+        if (updatedEntry.waiting_start && updatedEntry.waiting_end) {
+          const start = updatedEntry.waiting_start;
+          const end = updatedEntry.waiting_end;
+          updatedEntry.waiting_time = end - start; // Time in seconds
         }
       }
 
@@ -185,10 +185,10 @@ exports.updateStatusChange = functions.https.onRequest((req, res) => {
         newStatus !== "in_process"
       ) {
         updatedEntry.in_process_end = now;
-        if (updatedEntry.in_process_start) {
-          const start = new Date(updatedEntry.in_process_start).getTime();
-          const end = new Date(updatedEntry.in_process_end).getTime();
-          updatedEntry.procedure_time = (end - start) / 1000; // Time in seconds
+        if (updatedEntry.in_process_start && updatedEntry.in_process_end) {
+          const start = updatedEntry.in_process_start;
+          const end = updatedEntry.in_process_end;
+          updatedEntry.procedure_time = end - start; // Time in seconds
         }
       }
 

@@ -22,6 +22,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  Timestamp,
 } from "firebase/firestore"; // Import necessary methods from Firestore
 
 import { firestore } from "./../helpers/firebaseConfig";
@@ -148,7 +149,7 @@ export const Registro = () => {
           status: statusList[order],
           ...(statusList[order] === "waiting" && {
             // make sure there is a wait_start value when the patient setup is done.
-            wait_start: Math.floor(Date.now() / 1000),
+            waiting_start: Timestamp.now(),
           }),
         });
       }
@@ -318,15 +319,15 @@ export const Registro = () => {
     setDisabledButton(true);
     const formattedPatient = {
       complete: false,
-      last_update: new Date(),
+      last_update: Timestamp.now(),
       patient_name: patient.paciente,
       plan_of_care: patientPlanOfCare,
       pt_no: "",
       reason_for_visit: patient.motivo,
       age: patient.edad !== undefined ? patient.edad : null,
       tel: patient.tel ?? null,
-      start_time: new Date(),
-      stop_time: new Date(),
+      start_time: Timestamp.now(),
+      stop_time: Timestamp.now(),
       wait_time: 0,
       type_of_visit: patient.tipo,
       gender: patient.gender,
