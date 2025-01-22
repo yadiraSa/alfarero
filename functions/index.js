@@ -211,8 +211,8 @@ exports.updateStatusChange = functions.https.onRequest((req, res) => {
             return {
               ...station,
               status: "waiting",
-              waiting_start: new Date().getTime(),
-              lastUpdate: new Date().getTime(),
+              waiting_start: now,
+              lastUpdate: now,
             };
           }
           return station;
