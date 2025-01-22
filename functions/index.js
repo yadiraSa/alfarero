@@ -193,8 +193,36 @@ exports.updateStatusChange = functions.https.onRequest((req, res) => {
       }
 
       // Replace the entry in the `plan_of_care` array
-      const updatedPlanOfCare = [...patientData.plan_of_care];
+      let updatedPlanOfCare = [...patientData.plan_of_care];
       updatedPlanOfCare[carePlanEntryIndex] = updatedEntry;
+
+      // if the change is from anything to "complete", update the next eligible station to "waiting"
+      if (newStatus === "complete") {
+        let updated = false; // Track if we've already updated an eligible station
+        let updatedIndex = -1; // Track the index of the updated station
+
+        const tempPlanOfCare = updatedPlanOfCare.map((station, index) => {
+          if (
+            !updated &&
+            ["2", "3", "4", "5", "6", "7"].includes(station.status)
+          ) {
+            updated = true; // Mark the first eligible station for update
+            updatedIndex = index; // Save the index of the updated station
+            return {
+              ...station,
+              status: "waiting",
+              waiting_start: new Date().getTime(),
+              lastUpdate: new Date().getTime(),
+            };
+          }
+          return station;
+        });
+
+        // Update the plan of care with the modified station
+        if (updatedIndex !== -1) {
+          updatedPlanOfCare[updatedIndex] = tempPlanOfCare[updatedIndex];
+        }
+      }
 
       // Commit the updated array back to Firestore
       await patientRef.update({ plan_of_care: updatedPlanOfCare });
