@@ -79,13 +79,11 @@ export const Anfitrion = () => {
   useEffect(() => {
     let isMounted = true;
     let unsubscribe;
-    let unsubscribeStats;
 
     const fetchData = async () => {
       try {
         // Create references for collections
         const patientsRef = collection(firestore, "patients");
-        const statsRef = collection(firestore, "stats");
 
         // Build queries with the new Firebase v9+ syntax
         const q = query(
@@ -96,31 +94,28 @@ export const Anfitrion = () => {
           where("complete", "==", false)
         );
 
-        const initialSnapshot = await getDocs(q); // Use 'getDocs' for the initial data fetch
-        const statsSnapshot = await getDocs(statsRef);
-
+        // Initial fetch for patients
+        const initialSnapshot = await getDocs(q);
         const initialData = initialSnapshot.docs.map((doc) => doc.data());
-        const initialStats = statsSnapshot.docs.map((doc) => doc.data());
-
         if (isMounted) {
           setData(initialData);
-          setStatsData(initialStats);
         }
 
         // Listen for real-time updates on the 'patients' collection
         unsubscribe = onSnapshot(q, (snapshot) => {
           const updatedData = snapshot.docs.map((doc) => doc.data());
-
           if (isMounted) {
             setData(updatedData);
           }
         });
 
-        // Listen for real-time updates on the 'stats' collection
-        unsubscribeStats = onSnapshot(statsRef, (snapshot) => {
-          const updatedData = snapshot.docs.map((doc) => doc.data());
-          setStatsData(updatedData);
-        });
+        // Fetch statsData occasionally
+        if (isMounted) {
+          const statsRef = collection(firestore, "stats");
+          const statsSnapshot = await getDocs(statsRef);
+          const statsData = statsSnapshot.docs.map((doc) => doc.data());
+          setStatsData(statsData);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -132,13 +127,9 @@ export const Anfitrion = () => {
       if (unsubscribe) {
         unsubscribe();
       }
-      if (unsubscribeStats) {
-        unsubscribeStats();
-      }
-
       isMounted = false;
     };
-  }, [today, tomorrow]);
+  }, [today]);
 
   // Shows editable icons in the host table
 
