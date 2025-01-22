@@ -134,10 +134,10 @@ export const Registro = () => {
   const fillMissingStations = (stations, visits) => {
     const result = [];
     const visitsSet = new Set(visits);
+    console.log(visits, stations);
 
     let order = -1;
 
-    // eslint-disable-next-line no-unused-expressions
     visits?.forEach((visit) => {
       const station = stations.find((s) => s.value === visit);
       if (station) {
@@ -163,7 +163,7 @@ export const Registro = () => {
         });
       }
     });
-
+    console.log(result);
     return result;
   };
 
