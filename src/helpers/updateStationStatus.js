@@ -10,36 +10,8 @@ import {
 } from "firebase/firestore";
 import { firestore } from "./../helpers/firebaseConfig";
 
-import axios from "axios";
-
 export const handleStatusChange = async (value, hoveredRowKey, station) => {
   try {
-<<<<<<< HEAD
-    // Getting the database name from the environment variable
-    const databaseName = process.env.REACT_APP_FIREBASE_DB;
-
-    // Calling the cloud function with the required parameters
-    const response = await axios.post(
-      "https://us-central1-alfarero-478ad.cloudfunctions.net/updateStatusChange",
-      {
-        patientId: hoveredRowKey,
-        carePlanIndex: station,
-        newStatus: value,
-        databaseName: databaseName,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log("Function response:", response.data);
-    return response.data; // Optionally return the result
-  } catch (error) {
-    console.error("Error calling the cloud function:", error);
-    throw error; // Optionally rethrow the error if you want to handle it elsewhere
-=======
     // Reference the Firestore document for the patient
     const patientRef = doc(firestore, "patients", hoveredRowKey);
 
@@ -151,7 +123,6 @@ export const handleStatusChange = async (value, hoveredRowKey, station) => {
     console.log("Patient document updated successfully.");
   } catch (error) {
     console.error("Error updating patient document:", error, value);
->>>>>>> upstream/master
   }
 };
 
