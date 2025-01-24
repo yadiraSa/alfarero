@@ -13,7 +13,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase app
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
 const dbName = process.env.REACT_APP_FIREBASE_DB || "default"; // Default to "default" if not set
 console.log("Database name: ", dbName);
@@ -23,5 +23,6 @@ const firestore =
   dbName === "alfarero-dev"
     ? getFirestore(firebaseApp, "alfarero-dev") // Use dev database
     : getFirestore(firebaseApp); // Use default database (production)
+
 console.log(firestore);
 export { firebaseApp, firestore };

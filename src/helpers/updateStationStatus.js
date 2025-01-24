@@ -7,7 +7,9 @@ import {
   doc,
   updateDoc,
   getDoc,
+  Timestamp,
 } from "firebase/firestore";
+
 import { firestore } from "./../helpers/firebaseConfig";
 
 export const handleStatusChange = async (value, hoveredRowKey, station) => {
@@ -133,6 +135,7 @@ export const handleDelete = async (hoveredRowKey, history) => {
     // Update the patient document to mark it as complete
     await updateDoc(docPatientRef, {
       complete: true,
+      stop_time: Timestamp.now(),
     });
 
     // Fetch the patient data after marking as complete
