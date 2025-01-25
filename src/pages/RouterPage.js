@@ -44,7 +44,6 @@ import { UiContext } from "../context/UiContext";
 import { IngresarHost } from "./IngresarHost";
 import { Survey } from "./Survey";
 import { Settings } from "./Settings";
-import { Settings } from "./Settings";
 import Stats from "./Stats";
 import { cleanPaulTests } from "../helpers/updateStationStatus";
 
