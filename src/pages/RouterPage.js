@@ -42,6 +42,7 @@ import { Member } from "./Member";
 import { UiContext } from "../context/UiContext";
 import { IngresarHost } from "./IngresarHost";
 import { Survey } from "./Survey";
+import { Settings } from "./Settings";
 import Stats from "./Stats";
 import { cleanPaulTests } from "../helpers/updateStationStatus";
 
@@ -172,6 +173,11 @@ export const RouterPage = () => {
     },
     {
       key: "8",
+      icon: <BarChartOutlined />,
+      label: <Link to="/settings">{t("SETTINGS")}</Link>,
+    },
+    {
+      key: "9",
       label: t("version"),
     },
   ];
@@ -259,6 +265,8 @@ export const RouterPage = () => {
                 <Route path="/estadisticas" component={Stats} />
                 <Route path="/survey" component={Survey} />
                 <Route path="/member" component={Member} />
+
+                <Route path="/settings" component={Settings} />
                 <Redirect to="/ingresar-host" />
               </Switch>
             </AlertProvider>
