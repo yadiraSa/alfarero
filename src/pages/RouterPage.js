@@ -17,6 +17,7 @@ import {
   BarChartOutlined,
   CoffeeOutlined,
   OrderedListOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import {
   BrowserRouter as Router,
@@ -173,7 +174,7 @@ export const RouterPage = () => {
     },
     {
       key: "8",
-      icon: <BarChartOutlined />,
+      icon: <SettingOutlined />,
       label: <Link to="/settings">{t("SETTINGS")}</Link>,
     },
     {
@@ -265,7 +266,6 @@ export const RouterPage = () => {
                 <Route path="/estadisticas" component={Stats} />
                 <Route path="/survey" component={Survey} />
                 <Route path="/member" component={Member} />
-
                 <Route path="/settings" component={Settings} />
                 <Redirect to="/ingresar-host" />
               </Switch>

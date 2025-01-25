@@ -9,12 +9,13 @@ import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 const { Title, Text } = Typography;
 
 export const Settings = () => {
-  const [t] = useTranslation("global");
+  // eslint-disable-next-line
+  const [t, i18n] = useTranslation("global");
+
   const [stations, setStations] = useState([]);
   const [form] = Form.useForm();
 
-  useHideMenu(false); // Hide the menu (if applicable)
-
+  // Fetch all stations from the `stats` collection
   useEffect(() => {
     const fetchStations = async () => {
       try {
@@ -40,8 +41,7 @@ export const Settings = () => {
     };
 
     fetchStations();
-  }, [form, t]);
-
+  }, [form]);
   const onFinish = async (values) => {
     try {
       const updates = [];
@@ -65,6 +65,8 @@ export const Settings = () => {
       console.error("Error updating max waiting times:", error);
     }
   };
+  // Hide the menu (if applicable)
+  useHideMenu(false);
 
   return (
     <div style={{ padding: "20px" }}>
